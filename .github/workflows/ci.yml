@@ -1,0 +1,101 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: wacrm
+          POSTGRES_PASSWORD: wacrm
+          POSTGRES_DB: wa_crm_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U wacrm" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://wacrm:wacrm@localhost:5432/wa_crm_test
+      TEST_DATABASE_URL: postgresql://wacrm:wacrm@localhost:5432/wa_crm_test
+      APP_KEY: Q0ktb25seS1hcHAta2V5LW5vdC1hLXNlY3JldC0wMDAwMDA=
+      APP_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx prisma migrate deploy
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  # Browser tests: the main customer journey and the layout scan of every page
+  e2e:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: wacrm
+          POSTGRES_PASSWORD: wacrm
+          POSTGRES_DB: wa_crm
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U wacrm" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://wacrm:wacrm@localhost:5432/wa_crm
+      APP_KEY: Q0ktb25seS1hcHAta2V5LW5vdC1hLXNlY3JldC0wMDAwMDA=
+      APP_URL: http://localhost:3210
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - run: npm run test:e2e
+      - name: Report and server logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-report
+          path: |
+            playwright-report
+            test-results
+            e2e/.logs
+          retention-days: 7
+
+  # The Docker image and the web installer, the way buyers run them
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start with Docker Compose
+        run: |
+          printf 'POSTGRES_PASSWORD=ci-postgres-pass\nAPP_KEY=%s\nAPP_URL=http://localhost:3000\n' "$(openssl rand -base64 32)" > .env
+          docker compose up -d --build
+      - name: Web installer smoke test
+        run: |
+          for i in $(seq 1 60); do curl -sf -o /dev/null http://localhost:3000/install && break; sleep 3; done
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/)" = "302"
+          curl -sf http://localhost:3000/api/install | grep -q '"databaseFromEnv":true'
+          curl -sf -X POST -H 'content-type: application/json' -H 'origin: http://localhost:3000' \
+            -d '{"appUrl":"http://localhost:3000","appName":"CI CRM","admin":{"name":"CI Admin","email":"ci@example.com","password":"Ci-pass-1234"},"demo":true}' \
+            http://localhost:3000/api/install
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/install)" = "302"
+          curl -sf -X POST -H 'content-type: application/json' -H 'origin: http://localhost:3000' \
+            -d '{"email":"ci@example.com","password":"Ci-pass-1234"}' http://localhost:3000/api/auth/login
+          for i in $(seq 1 20); do docker compose logs worker | grep -q "Worker started" && exit 0; sleep 3; done
+          echo "The worker didn't start after the installation" && exit 1
+      - name: Logs
+        if: failure()
+        run: docker compose logs

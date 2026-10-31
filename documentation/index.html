@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRM for WhatsApp — Documentation</title>
+<style>
+  :root { --green: #16a34a; --ink: #111827; --muted: #6b7280; --line: #e5e7eb; --bg: #f9fafb; --code: #f3f4f6; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 16px; }
+  body { margin: 0; font: 16px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: #fff; }
+  nav { position: fixed; inset: 0 auto 0 0; width: 280px; overflow-y: auto; border-right: 1px solid var(--line); background: var(--bg); padding: 24px 18px; }
+  nav .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; margin-bottom: 4px; }
+  nav .brand span { display: inline-flex; width: 30px; height: 30px; border-radius: 8px; background: var(--green); color: #fff; align-items: center; justify-content: center; font-size: 15px; }
+  nav .version { color: var(--muted); font-size: 13px; margin: 0 0 18px 40px; }
+  nav a { display: block; color: #374151; text-decoration: none; padding: 4px 8px; border-radius: 6px; font-size: 14px; }
+  nav a:hover { background: #ecfdf5; color: var(--green); }
+  nav a.sub { padding-left: 22px; font-size: 13px; color: var(--muted); }
+  main { margin-left: 280px; max-width: 980px; padding: 40px 48px 120px; }
+  h1 { font-size: 34px; margin: 0 0 6px; letter-spacing: -0.02em; }
+  h2 { font-size: 26px; margin: 64px 0 12px; padding-top: 12px; border-top: 1px solid var(--line); letter-spacing: -0.01em; }
+  h3 { font-size: 19px; margin: 32px 0 8px; }
+  p, li { color: #1f2937; }
+  .lead { font-size: 18px; color: var(--muted); }
+  code { background: var(--code); padding: 2px 6px; border-radius: 4px; font: 14px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  pre { background: #0f172a; color: #e2e8f0; padding: 16px 18px; border-radius: 10px; overflow-x: auto; font: 14px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  pre code { background: none; padding: 0; color: inherit; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 15px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--bg); font-weight: 600; }
+  img.shot { width: 100%; border: 1px solid var(--line); border-radius: 10px; margin: 12px 0 6px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+  .caption { color: var(--muted); font-size: 14px; margin-top: 0; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .note, .warn, .tip { border-radius: 10px; padding: 12px 16px; margin: 16px 0; font-size: 15px; }
+  .note { background: #eff6ff; border: 1px solid #bfdbfe; }
+  .warn { background: #fffbeb; border: 1px solid #fde68a; }
+  .tip { background: #ecfdf5; border: 1px solid #bbf7d0; }
+  ol.steps > li { margin-bottom: 8px; }
+  kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; font-size: 13px; }
+  @media (max-width: 900px) { nav { position: static; width: auto; border-right: 0; border-bottom: 1px solid var(--line); } main { margin-left: 0; padding: 24px 18px 80px; } .grid2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand"><span>✓</span> CRM for WhatsApp</div>
+  <div class="version">Version 1.0.0 · Documentation</div>
+  <a href="#intro">Introduction</a>
+  <a href="#requirements">Requirements</a>
+  <a href="#install">Installation</a>
+  <a class="sub" href="#install-docker">Docker (recommended)</a>
+  <a class="sub" href="#install-vps">VPS with PM2 and Nginx</a>
+  <a class="sub" href="#installer">Web installer</a>
+  <a class="sub" href="#install-cli">Command-line setup</a>
+  <a href="#first-steps">First steps</a>
+  <a href="#whatsapp">Connecting WhatsApp</a>
+  <a class="sub" href="#cloud-api">Official Cloud API</a>
+  <a class="sub" href="#qr">QR connection &amp; anti-ban</a>
+  <a href="#features">Using the app</a>
+  <a class="sub" href="#inbox">Team inbox</a>
+  <a class="sub" href="#crm">Contacts, deals &amp; tasks</a>
+  <a class="sub" href="#campaigns">Templates &amp; campaigns</a>
+  <a class="sub" href="#flows">Chatbot flows</a>
+  <a class="sub" href="#ai">AI assistant</a>
+  <a class="sub" href="#api">REST API</a>
+  <a class="sub" href="#webhooks">Webhooks</a>
+  <a href="#saas">SaaS &amp; billing</a>
+  <a class="sub" href="#plans">Plans &amp; limits</a>
+  <a class="sub" href="#gateways">Payment gateways</a>
+  <a class="sub" href="#workspaces">Managing workspaces</a>
+  <a href="#admin">Platform settings</a>
+  <a href="#translations">Translations</a>
+  <a href="#demo-mode">Running a public demo</a>
+  <a href="#updating">Updating</a>
+  <a href="#backups">Backups</a>
+  <a href="#faq">Troubleshooting &amp; FAQ</a>
+  <a href="#changelog">Changelog</a>
+  <a href="#credits">Credits</a>
+  <a href="#support">Support</a>
+</nav>
+
+<main>
+<h1 id="intro">CRM for WhatsApp</h1>
+<p class="lead">A multi-tenant WhatsApp CRM you run as your own SaaS: a shared team inbox, contacts and deals, bulk campaigns, a no-code chatbot builder and an AI assistant, on the <strong>official WhatsApp Cloud API</strong> or a <strong>WhatsApp number connected by QR code</strong>, with plans and online payments built in.</p>
+<img class="shot" src="images/app-inbox.jpg" alt="Team inbox">
+<p class="caption">The team inbox with the demo data that the installer can add.</p>
+
+<p>CRM for WhatsApp is free and open source under the MIT licence. This guide takes you from an empty server to a running platform. If something isn't covered here, see <a href="#support">Support</a>.</p>
+
+<h3>Features at a glance</h3>
+<ul>
+  <li><strong>Two ways to connect WhatsApp</strong>, chosen per number: Meta's official Cloud API, or any WhatsApp number by scanning a QR code (with warm-up, pacing and daily limits to lower the ban risk).</li>
+  <li><strong>Team inbox</strong> in real time: assignment, internal notes, tags, quick replies, media, read receipts, typing/viewing indicators, 24-hour window handling and approved templates.</li>
+  <li><strong>CRM</strong>: contacts with custom fields, CSV import/export, segments, consent tracking, a drag-and-drop deals pipeline, tasks with reminders and a contact timeline.</li>
+  <li><strong>Campaigns</strong>: Meta templates (sync, create and submit for approval) or free text with spintax on QR numbers, scheduling, throttled sending and live delivery reports.</li>
+  <li><strong>Chatbot flow builder</strong>: menus, questions with validation, conditions, delays, assignment, tags, deals, webhooks and AI replies; keyword, first-message and campaign-reply triggers.</li>
+  <li><strong>AI assistant</strong> (each workspace connects its own OpenAI, Gemini or Claude key): reply suggestions, rewrite, translation, chat summaries and auto-replies from a knowledge base.</li>
+  <li><strong>REST API and signed webhooks</strong> for every workspace.</li>
+  <li><strong>SaaS billing</strong>: plans with limits and features, trials, Stripe, Razorpay, PayPal and bank transfer, coupons, taxes and invoices.</li>
+  <li><strong>Super-admin panel</strong>: workspaces, plans, payments, "view as owner", branding, email templates and SMTP.</li>
+  <li><strong>White label</strong> (app name, logo, colour, favicon) and <strong>translation-ready</strong> (all text in one file, right-to-left supported).</li>
+</ul>
+
+<h2 id="requirements">Requirements</h2>
+<table>
+  <tr><th>Item</th><th>Minimum</th><th>Notes</th></tr>
+  <tr><td>Server</td><td>2 GB RAM, 2 vCPU</td><td>A Linux VPS (Ubuntu 22.04/24.04 recommended). Shared hosting without Node.js is <strong>not</strong> supported.</td></tr>
+  <tr><td>Node.js</td><td>20.9 or newer</td><td>Node 22 LTS recommended. Not needed with Docker.</td></tr>
+  <tr><td>PostgreSQL</td><td>14 or newer</td><td>Included in the Docker setup.</td></tr>
+  <tr><td>Domain + HTTPS</td><td>required for production</td><td>Meta only sends webhooks to HTTPS addresses.</td></tr>
+  <tr><td>Outgoing email (SMTP)</td><td>recommended</td><td>For verification, password reset, invitations and billing emails. Without it, emails are saved in <code>storage/mail-outbox</code>.</td></tr>
+</table>
+<p>The app runs as <strong>two processes</strong>: the web app (pages, API, realtime) and the <strong>worker</strong> (campaigns, QR connections, chatbot timers, reminders, billing). Both setups below start both.</p>
+
+<h2 id="install">Installation</h2>
+<p>Download or clone the repository (<code>git clone https://github.com/epifive/whatsapp-crm.git</code>). The repository folder is the application; upload its contents to your server (for example to <code>/var/www/wa-crm</code>).</p>
+
+<h3 id="install-docker">Option A — Docker (recommended)</h3>
+<p>Needs Docker with the Compose plugin. PostgreSQL, the web app and the worker start together.</p>
+<ol class="steps">
+  <li>In the application folder, create the settings file:
+<pre><code>cp .env.example .env
+nano .env</code></pre>
+  Set these three values (leave the rest):
+<pre><code>POSTGRES_PASSWORD="a-long-random-password"
+APP_KEY="paste the output of: openssl rand -base64 32"
+APP_URL="https://crm.yourdomain.com"</code></pre>
+  </li>
+  <li>Start everything:
+<pre><code>docker compose up -d --build</code></pre></li>
+  <li>Point your domain to the server and put Nginx with HTTPS in front of port 3000 (see <a href="#nginx">Nginx</a>), or open <code>http://SERVER-IP:3000</code> to try it.</li>
+  <li>Open your address in the browser: the <a href="#installer">web installer</a> starts. The database step is already filled in from Docker.</li>
+</ol>
+<div class="warn">Keep <code>APP_KEY</code> safe and never change it: it signs logins and encrypts stored secrets (WhatsApp tokens, API keys, payment keys). Changing it logs everyone out and makes those secrets unreadable.</div>
+
+<h3 id="install-vps">Option B — VPS with PM2 and Nginx</h3>
+<p>Example for Ubuntu 22.04/24.04, as a user with sudo.</p>
+<ol class="steps">
+  <li>Install Node.js 22, PostgreSQL and Nginx:
+<pre><code>curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt-get install -y nodejs postgresql nginx
+sudo npm install -g pm2</code></pre></li>
+  <li>Create the database and its user:
+<pre><code>sudo -u postgres psql -c "CREATE USER wacrm WITH PASSWORD 'a-long-random-password';"
+sudo -u postgres psql -c "CREATE DATABASE wa_crm OWNER wacrm;"</code></pre></li>
+  <li>Install and build the app (in the uploaded application folder):
+<pre><code>cd /var/www/wa-crm
+npm ci
+npm run build</code></pre></li>
+  <li>Start the web app and the worker, and keep them running after reboots:
+<pre><code>pm2 start ecosystem.config.cjs
+pm2 save
+pm2 startup     # run the command it prints</code></pre></li>
+  <li id="nginx">Nginx and HTTPS: copy <code>deploy/nginx.conf</code> to <code>/etc/nginx/sites-available/wa-crm</code>, replace <code>crm.example.com</code> with your domain, then:
+<pre><code>sudo ln -s /etc/nginx/sites-available/wa-crm /etc/nginx/sites-enabled/
+sudo nginx -t &amp;&amp; sudo systemctl reload nginx
+sudo apt-get install -y certbot python3-certbot-nginx
+sudo certbot --nginx -d crm.yourdomain.com</code></pre>
+  The config forwards websockets (needed for the realtime inbox) and allows 25 MB uploads.</li>
+  <li>Open <code>https://crm.yourdomain.com</code>: the web installer starts.</li>
+</ol>
+
+<h3 id="installer">The web installer</h3>
+<p>Until the app is installed, every page leads to <code>/install</code>. Once it's done, the installer closes itself.</p>
+<div class="grid2">
+  <div><img class="shot" src="images/install-1-server.jpg" alt="Server check"><p class="caption">1. Server check: Node version, writable folders, build.</p></div>
+  <div><img class="shot" src="images/install-2-database.jpg" alt="Database"><p class="caption">2. The PostgreSQL database (skipped with Docker).</p></div>
+  <div><img class="shot" src="images/install-3-admin.jpg" alt="Admin account"><p class="caption">3. App name, the app's address, your admin account and optional demo data.</p></div>
+  <div><img class="shot" src="images/install-4-done.jpg" alt="Done"><p class="caption">4. Done. The installer created the tables, your platform admin and the settings file (<code>.env</code>).</p></div>
+</div>
+<p><strong>Demo data</strong> adds a "Demo Store" workspace (40 contacts, chats, deals, tasks, a campaign report, a chatbot flow and an AI knowledge base) plus four example plans. Billing stays off until you turn it on. The demo is a separate workspace, so it never mixes with your own data; switch between workspaces with the menu at the top left.</p>
+
+<h3 id="install-cli">Command-line setup (alternative)</h3>
+<p>If you prefer not to use the web installer, write <code>.env</code> yourself (see <code>.env.example</code>), then:</p>
+<pre><code>npx prisma migrate deploy
+npm run create-admin -- --email you@example.com --name "Your Name" --password "a-strong-password"
+npm run seed:demo        # optional demo data</code></pre>
+<p><code>create-admin</code> also marks the app as installed.</p>
+
+<h2 id="first-steps">First steps after installing</h2>
+<ol class="steps">
+  <li><strong>Sign in</strong> with the admin account. You're the <em>platform admin</em> (the "Admin" link at the top) and the owner of your first workspace.</li>
+  <li><strong>Check the worker</strong>: Admin › Overview shows whether it's online.</li>
+  <li><strong>Email</strong>: Admin › Settings › Email (SMTP), then "Send test email".</li>
+  <li><strong>Branding</strong>: Admin › Settings › Branding: app name, logo, colour and favicon.</li>
+  <li><strong>Connect WhatsApp</strong>: Settings › WhatsApp numbers (see below).</li>
+  <li><strong>Selling plans?</strong> Set up <a href="#saas">billing</a>. Running it for one business? Leave billing off: every workspace is then unlimited.</li>
+</ol>
+<img class="shot" src="images/admin-overview.jpg" alt="Admin overview">
+
+<h2 id="whatsapp">Connecting WhatsApp</h2>
+<p>Each workspace can connect several numbers, each one either through the official Cloud API or by QR code. Everything else (inbox, campaigns, flows, AI, API) works the same on both.</p>
+<table>
+  <tr><th></th><th>Official Cloud API</th><th>QR code</th></tr>
+  <tr><td>Setup</td><td>Meta developer app (about 15 minutes, once)</td><td>Scan a QR code with the phone</td></tr>
+  <tr><td>Messages outside 24 h</td><td>Approved templates only</td><td>Any message (paced by the anti-ban engine)</td></tr>
+  <tr><td>Buttons and lists</td><td>Native WhatsApp buttons/lists</td><td>Numbered text menus</td></tr>
+  <tr><td>Costs</td><td>Meta's per-conversation prices, billed to your Meta account</td><td>None</td></tr>
+  <tr><td>Ban risk</td><td>None when you follow Meta's policies</td><td>Possible (unofficial); see below</td></tr>
+</table>
+<img class="shot" src="images/app-connect-number.jpg" alt="Connect a number">
+
+<h3 id="cloud-api">Official WhatsApp Cloud API</h3>
+<ol class="steps">
+  <li>Go to <a href="https://developers.facebook.com/apps">developers.facebook.com/apps</a> › <em>Create app</em> › type <em>Business</em>, and link your Meta Business account.</li>
+  <li>In the app, add the <strong>WhatsApp</strong> product. Under <em>WhatsApp › API Setup</em>, add and verify your business phone number. Copy the <strong>Phone number ID</strong> and the <strong>WhatsApp Business Account ID</strong>.</li>
+  <li>Create a <strong>permanent access token</strong>: Business Settings › Users › <em>System users</em> › Add (role Admin) › <em>Add assets</em>: your app (full control) and your WhatsApp account (full control) › <em>Generate new token</em> with the permissions <code>whatsapp_business_messaging</code> and <code>whatsapp_business_management</code>. Copy the token.</li>
+  <li>Copy the <strong>App secret</strong> from <em>App settings › Basic</em>.</li>
+  <li>In the CRM: Settings › WhatsApp numbers › <em>Add number</em> › <em>Official Cloud API</em>, and paste the four values. The app checks them with Meta and subscribes to your WhatsApp account.</li>
+  <li>The number's page then shows a <strong>Callback URL</strong> and a <strong>Verify token</strong>. In Meta: <em>WhatsApp › Configuration › Webhook › Edit</em>, paste both, click <em>Verify and save</em>, then <em>Manage</em> and subscribe to the <code>messages</code> field (and <code>message_template_status_update</code> for template approvals).</li>
+  <li>Send a WhatsApp message to the number: it appears in the inbox. Templates: Templates › <em>Sync from Meta</em>, or create new ones and submit them for approval.</li>
+</ol>
+<div class="note">Webhooks need your app on <strong>HTTPS</strong> with a valid certificate. Every incoming webhook is verified with your App secret (<code>X-Hub-Signature-256</code>).</div>
+
+<h3 id="qr">QR connection and the anti-ban engine</h3>
+<p>Settings › WhatsApp numbers › <em>Add number</em> › <em>QR code (WhatsApp Web)</em>, then on the phone: WhatsApp › Linked devices › Link a device, and scan. The worker keeps the connection and reconnects by itself; the session is stored encrypted in the database.</p>
+<p>Every message sent from a QR number (replies, campaigns, flows, API) goes through the anti-ban engine:</p>
+<ul>
+  <li><strong>Warm-up</strong>: a new number may send 25, 50, 125, 125, 250 and 250 messages on its first six days, then its own daily limit (300 by default, adjustable per number).</li>
+  <li><strong>Pacing</strong>: a random pause between messages (12–30 seconds by default) and a "typing…" indicator.</li>
+  <li><strong>Spintax</strong> <code>{Hi|Hello|Hey}</code> so bulk messages aren't identical, and personalisation with <code>{{first_name}}</code> and custom fields.</li>
+  <li><strong>Opt-outs</strong>: a contact who replies STOP is never messaged again by campaigns.</li>
+</ul>
+<div class="warn"><strong>Disclaimer:</strong> QR connections use WhatsApp Web's protocol, which isn't an official API. WhatsApp can still ban numbers that send unwanted messages, whatever the pacing. Only message people who agreed to hear from you, use a number you can afford to lose, and prefer the official Cloud API for marketing. As the platform admin you can switch QR off per plan.</div>
+
+<h2 id="features">Using the app</h2>
+<h3 id="inbox">Team inbox</h3>
+<p>All chats from all numbers in one place, updated live. Filter by status, assignee and number; assign chats; add internal notes; use <kbd>/</kbd> for quick replies; send media; reply to a message; see delivered/read ticks. On Cloud API numbers, the composer switches to approved templates when the 24-hour window is closed. The right panel shows the contact, tags, notes, the running chatbot and AI tools.</p>
+<div class="grid2">
+  <div><img class="shot" src="images/app-dashboard.jpg" alt="Dashboard"><p class="caption">Dashboard and getting-started checklist.</p></div>
+  <div><img class="shot" src="images/mobile-inbox.jpg" alt="Mobile inbox" style="max-width:240px;display:block;margin:12px auto 6px"><p class="caption" style="text-align:center">Works on phones too.</p></div>
+</div>
+
+<h3 id="crm">Contacts, deals and tasks</h3>
+<ul>
+  <li><strong>Contacts</strong>: custom fields (Settings › Custom fields), tags, owner, consent (opt-in/opt-out) and a timeline of everything that happened. Import a CSV with column mapping, export the current list.</li>
+  <li><strong>Segments</strong>: saved filters (tags, fields, consent, last message, deals…) used by campaigns.</li>
+  <li><strong>Deals</strong>: Kanban pipelines with stages, values and win probability (Settings › Pipelines). Drag deals between stages.</li>
+  <li><strong>Tasks</strong>: due dates, assignees and reminders (in the app and by email).</li>
+</ul>
+<img class="shot" src="images/app-contacts.jpg" alt="Contacts">
+<img class="shot" src="images/app-deals.jpg" alt="Deals">
+
+<h3 id="campaigns">Templates and campaigns</h3>
+<p>A campaign sends one message to an audience: all contacts, a segment or tags, optionally only opted-in contacts. Cloud API numbers send an approved template (map each <code>{{1}}</code> to a contact field); QR numbers send text or media with spintax. Send now or schedule; pause, resume, cancel and retry failed messages. The report shows sent, delivered, read, replied and failed per recipient.</p>
+<img class="shot" src="images/app-campaign-report.jpg" alt="Campaign report">
+
+<h3 id="flows">Chatbot flows</h3>
+<p>Automations › New flow, then drag steps onto the canvas and connect them. A flow starts on a keyword, on a contact's first message, on any message, or when someone replies to a campaign. When a teammate replies in the chat, the bot pauses for 24 hours.</p>
+<table>
+  <tr><th>Step</th><th>What it does</th></tr>
+  <tr><td>Send message</td><td>Text and/or media, with variables like <code>{{first_name}}</code>.</td></tr>
+  <tr><td>Menu</td><td>Up to 3 buttons or a list of up to 10 options (numbered text on QR numbers).</td></tr>
+  <tr><td>Ask a question</td><td>Text, number, email, phone, date or yes/no, validated and saved to a variable or contact field.</td></tr>
+  <tr><td>Condition</td><td>Branch on variables and contact data.</td></tr>
+  <tr><td>Wait</td><td>Minutes, hours or days.</td></tr>
+  <tr><td>Assign chat / Tags / Update contact / Create deal</td><td>CRM actions.</td></tr>
+  <tr><td>Webhook</td><td>Sends the conversation data (signed) to your server; its answer can set variables.</td></tr>
+  <tr><td>AI reply</td><td>Answers from the knowledge base, optionally for several turns, with a hand-over path.</td></tr>
+  <tr><td>End</td><td>Optional closing message; can close the chat.</td></tr>
+</table>
+<img class="shot" src="images/app-flow-builder.jpg" alt="Flow builder">
+
+<h3 id="ai">AI assistant</h3>
+<p>Each workspace connects <strong>its own</strong> AI account in Settings › AI assistant: OpenAI, Google Gemini or Anthropic Claude. The provider bills that account directly; the platform never pays for AI. Then:</p>
+<ul>
+  <li><strong>Inbox</strong>: ✨ suggest a reply, rewrite (improve, shorter, friendlier, formal), translate the draft or a customer's message, summarise the chat and save it as a note.</li>
+  <li><strong>Auto-reply</strong>: when no chatbot handles a message, the AI answers from the knowledge base; if it can't, the chat goes to the team.</li>
+  <li><strong>Knowledge base</strong>: plain-text articles (prices, delivery, policies, FAQs) the AI answers from.</li>
+</ul>
+<img class="shot" src="images/app-settings-ai.jpg" alt="AI settings">
+
+<h3 id="api">REST API</h3>
+<p>Settings › Developers › <em>New API key</em>. Send it as <code>Authorization: Bearer wacrm_…</code>. Limit: 120 requests per minute per key.</p>
+<table>
+  <tr><th>Endpoint</th><th>Description</th></tr>
+  <tr><td><code>GET /api/v1/accounts</code></td><td>The workspace's WhatsApp numbers.</td></tr>
+  <tr><td><code>GET /api/v1/contacts?phone=&amp;q=&amp;cursor=</code></td><td>Find or list contacts.</td></tr>
+  <tr><td><code>POST /api/v1/contacts</code></td><td>Create or update a contact by phone (<code>name</code>, <code>email</code>, <code>fields</code>, <code>tags</code>, <code>opted_in</code>).</td></tr>
+  <tr><td><code>GET / PATCH /api/v1/contacts/:id</code></td><td>Read or update one contact.</td></tr>
+  <tr><td><code>POST /api/v1/messages</code></td><td>Send <code>text</code>, <code>media_url</code> or a <code>template</code> to <code>to</code> (optionally from <code>account_id</code>).</td></tr>
+  <tr><td><code>GET /api/v1/messages/:id</code></td><td>Delivery status of a message.</td></tr>
+  <tr><td><code>POST /api/v1/flows/:id/start</code></td><td>Start a chatbot flow for a phone number, with variables.</td></tr>
+</table>
+<pre><code>curl -X POST https://crm.yourdomain.com/api/v1/messages \
+  -H "Authorization: Bearer wacrm_your_key" -H "Content-Type: application/json" \
+  -d '{"to": "+919000012345", "text": "Your order has shipped 🚚"}'</code></pre>
+<img class="shot" src="images/app-settings-developers.jpg" alt="Developers">
+
+<h3 id="webhooks">Webhooks</h3>
+<p>Settings › Developers › <em>Add webhook</em>. Events: <code>message.received</code>, <code>message.status</code>, <code>contact.created</code>, <code>deal.stage_changed</code>, <code>deal.won</code>, <code>flow.completed</code>, <code>campaign.completed</code>. Each POST has the headers <code>X-WACRM-Event</code>, <code>X-WACRM-Delivery</code>, <code>X-WACRM-Timestamp</code> and <code>X-WACRM-Signature</code>. Failed deliveries are retried with back-off. Verify the signature like this (Node.js):</p>
+<pre><code>const crypto = require("crypto");
+function isValid(rawBody, headers, secret) {
+  const expected = "sha256=" + crypto.createHmac("sha256", secret)
+    .update(`${headers["x-wacrm-timestamp"]}.${rawBody}`).digest("hex");
+  return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(headers["x-wacrm-signature"]));
+}</code></pre>
+
+<h2 id="saas">SaaS and billing</h2>
+<p>Billing is <strong>off</strong> after installation: every workspace can use everything. To sell plans:</p>
+<ol class="steps">
+  <li>Admin › <strong>Plans</strong>: create your plans (the demo data includes four to start from).</li>
+  <li>Admin › Settings › <strong>Billing</strong>: currency, the plan new workspaces start on (with its free trial), grace period, reminder days, tax and your company details for invoices. Tick <em>Billing on</em>.</li>
+  <li>Turn on at least one <a href="#gateways">payment gateway</a>.</li>
+</ol>
+
+<h3 id="plans">Plans and limits</h3>
+<p>Each plan has a monthly and/or yearly price (0 = not sold that way; both 0 = free plan), a free trial, limits and features:</p>
+<table>
+  <tr><th>Limits</th><th>Features (on/off)</th></tr>
+  <tr><td>WhatsApp numbers · team members (pending invitations count) · contacts · campaigns per month · chatbot flows (use <em>Unlimited</em> for no limit)</td><td>Official Cloud API · QR connection · campaigns · chatbot flows · AI assistant · REST API · webhooks</td></tr>
+</table>
+<p>Limits are checked when something is added; existing data is never deleted. When a period ends unpaid, the workspace keeps working for the grace period, then becomes <strong>read-only</strong>: everything stays visible and exportable and incoming chats still arrive, but sending, campaigns and automations pause until it renews. Customers get emails before a trial ends, before renewal, when payment is due and when the workspace becomes read-only.</p>
+<img class="shot" src="images/admin-plans.jpg" alt="Plans">
+
+<h3 id="gateways">Payment gateways</h3>
+<p>Customers pay for one period at a time (monthly or yearly) and renew from Settings › Billing; paying early adds the new period after the current one. Configure the gateways in Admin › Settings. Each card shows the webhook URL to copy.</p>
+<table>
+  <tr><th>Gateway</th><th>What you need</th><th>Webhook</th></tr>
+  <tr><td><strong>Stripe</strong> (cards worldwide)</td><td>Secret key (<code>sk_live_…</code>) from Developers › API keys</td><td>Developers › Webhooks › Add endpoint, event <code>checkout.session.completed</code>; paste the signing secret (<code>whsec_…</code>).</td></tr>
+  <tr><td><strong>Razorpay</strong> (UPI, cards, netbanking in India)</td><td>Key ID and Key secret from Account &amp; Settings › API keys</td><td>Account &amp; Settings › Webhooks, event <code>payment.captured</code>, with a secret you choose.</td></tr>
+  <tr><td><strong>PayPal</strong></td><td>Client ID and secret of a REST app (sandbox or live)</td><td>In the app: Webhooks › Add, events <em>Checkout order approved</em> and <em>Payment capture completed</em>; paste the Webhook ID.</td></tr>
+  <tr><td><strong>Bank transfer</strong></td><td>Your bank/UPI details</td><td>Customers enter the transfer reference; you confirm it in Admin › Invoices.</td></tr>
+</table>
+<p>Payments are confirmed both when the customer comes back from the payment page and by the webhook, so a closed browser tab still activates the plan. The amount paid is checked against the invoice. <strong>Coupons</strong> (Admin › Coupons) give a percentage or fixed discount, optionally limited to plans, a number of uses and an end date. Every payment gets a numbered invoice the customer can print or save as PDF.</p>
+
+<h3 id="workspaces">Managing workspaces</h3>
+<p>Admin › <strong>Workspaces</strong> lists every workspace with its plan, status and usage. On a workspace you can put it on a plan until a date (e.g. a deal agreed outside the app), give a trial, make it read-only, suspend it with a reason, and <strong>View as owner</strong> to help a customer: a purple bar shows you're viewing as them, it ends after two hours, and start and stop are recorded in the audit log.</p>
+
+<h2 id="admin">Platform settings</h2>
+<img class="shot" src="images/admin-settings.jpg" alt="Admin settings">
+<ul>
+  <li><strong>Branding</strong>: app name, logo, favicon, main colour, support email (also used in emails).</li>
+  <li><strong>Email (SMTP)</strong>: any SMTP server (Gmail/Google Workspace with an app password, Amazon SES, Mailgun, Brevo…).</li>
+  <li><strong>Billing and gateways</strong>: see above.</li>
+  <li><strong>Email templates</strong>: change the subject, heading, text and button of every email, with placeholders like <code>{{name}}</code>, <code>{{workspace}}</code> and <code>{{app_name}}</code>. Empty fields use the built-in text.</li>
+</ul>
+
+<h2 id="translations">Translations</h2>
+<p>All interface text is in <code>messages/en.json</code>. To add a language:</p>
+<ol class="steps">
+  <li>Copy <code>messages/en.json</code> to <code>messages/&lt;code&gt;.json</code> (e.g. <code>hi.json</code>) and translate the values (keep the keys and the <code>{placeholders}</code>).</li>
+  <li>Add the code to <code>LOCALES</code> in <code>src/i18n/config.ts</code> (and to <code>RTL_LOCALES</code> for right-to-left languages such as Arabic or Urdu).</li>
+  <li>Rebuild: <code>npm run build</code>, then restart.</li>
+</ol>
+
+<h2 id="demo-mode">Running a public demo</h2>
+<p>To show the platform to your own customers before they sign up, run a <strong>separate</strong> copy of the app in demo mode. Visitors sign in with one click as the platform admin, a workspace owner or an agent and can try everything; the data is rebuilt every few hours.</p>
+<div class="warn"><strong>Demo mode deletes every workspace and account</strong> on each reset. Never turn it on for the installation your customers use.</div>
+<ol class="steps">
+  <li>Install a second copy on its own database, as usual.</li>
+  <li>Add to its <code>.env</code>: <code>DEMO_MODE=true</code> (and optionally <code>DEMO_RESET_HOURS=3</code>, 1 to 24).</li>
+  <li>Run <code>npm run demo:reset</code> once, then restart the web app and the worker.</li>
+</ol>
+<p>Demo accounts (password <code>demo1234</code>): <code>admin@demo.test</code>, <code>owner@demo.test</code>, <code>agent@demo.test</code>. In demo mode the app refuses whatever reaches outside the server or changes the platform: connecting WhatsApp numbers, test messages, payments, emails (sign-up, invitations, password resets), AI keys, webhooks and the REST API, file uploads and all platform settings.</p>
+
+<h2 id="updating">Updating to a new version</h2>
+<ol class="steps">
+  <li><a href="#backups">Back up</a> the database and the <code>storage</code> folder.</li>
+  <li>Replace the application files with the new version (<code>git pull</code> or a fresh download). <strong>Keep</strong> your <code>.env</code> and <code>storage</code> folder.</li>
+  <li>Docker: <code>docker compose up -d --build</code>. PM2:
+<pre><code>npm ci
+npx prisma migrate deploy
+npm run build
+pm2 restart all</code></pre></li>
+</ol>
+<p>Database changes are applied by the migrations and never delete your data.</p>
+
+<h2 id="backups">Backups</h2>
+<p>Back up two things regularly: the PostgreSQL database and the <code>storage</code> folder (uploaded media, the install lock), plus your <code>.env</code> once.</p>
+<pre><code># database (PM2 setup)
+pg_dump -U wacrm -h 127.0.0.1 wa_crm | gzip &gt; wa_crm-$(date +%F).sql.gz
+# database (Docker setup)
+docker compose exec -T postgres pg_dump -U wacrm wa_crm | gzip &gt; wa_crm-$(date +%F).sql.gz</code></pre>
+
+<h2 id="faq">Troubleshooting and FAQ</h2>
+<h3>Campaigns stay "running", QR numbers don't connect, flows don't continue after a wait</h3>
+<p>The worker isn't running. PM2: <code>pm2 status</code> and <code>pm2 logs wa-crm-worker</code>. Docker: <code>docker compose logs worker</code>. Admin › Overview shows when it last checked in.</p>
+<h3>Meta says the callback URL couldn't be verified</h3>
+<p>The app must be reachable over HTTPS with a valid certificate, and the verify token must be copied exactly from the number's page. Check that <code>APP_URL</code> in <code>.env</code> is your public HTTPS address.</p>
+<h3>No messages arrive from the Cloud API</h3>
+<p>In Meta's WhatsApp › Configuration, make sure the <code>messages</code> webhook field is subscribed, and that the App secret saved in the CRM is current (the signature check fails otherwise).</p>
+<h3>Emails don't arrive</h3>
+<p>Set up SMTP in Admin › Settings and use "Send test email". Until then, emails are saved in <code>storage/mail-outbox</code>.</p>
+<h3>The realtime inbox doesn't update</h3>
+<p>Your proxy must forward websockets: use the <code>Upgrade</code>/<code>Connection</code> headers from <code>deploy/nginx.conf</code>.</p>
+<h3>I forgot the admin password</h3>
+<p>Use "Forgot password" on the sign-in page, or on the server: <code>npm run create-admin -- --email you@example.com --password "new-password"</code>.</p>
+<h3>Can I run it for my own business only?</h3>
+<p>Yes: leave billing off. Every workspace is then unlimited and nobody is asked to pay.</p>
+<h3>Where are payments and AI usage billed?</h3>
+<p>Plan payments go to your Stripe/Razorpay/PayPal account. WhatsApp Cloud API conversations are billed by Meta to the business that owns the WhatsApp account. AI usage is billed by the AI provider to each workspace's own key.</p>
+
+<h2 id="changelog">Changelog</h2>
+<h3>Version 1.0.0 — initial release</h3>
+<ul>
+  <li>Official WhatsApp Cloud API and QR connections with the anti-ban engine.</li>
+  <li>Realtime team inbox, contacts, segments, CSV import/export, deals, tasks.</li>
+  <li>Templates and campaigns with reports; chatbot flow builder; REST API and webhooks.</li>
+  <li>AI assistant with each workspace's own OpenAI, Gemini or Claude key.</li>
+  <li>SaaS billing with Stripe, Razorpay, PayPal and bank transfer; super-admin panel.</li>
+  <li>Web installer, demo data, a live demo mode, Docker and PM2 setups.</li>
+</ul>
+
+<h2 id="credits">Credits</h2>
+<p>Built with open-source software, each under its own license (MIT unless noted): Next.js, React, Prisma, PostgreSQL driver <code>pg</code>, pg-boss, Socket.IO, Baileys, React Flow (<code>@xyflow/react</code>), Base UI, shadcn/ui, Tailwind CSS, Lucide icons (ISC), next-intl, Zod, dnd-kit, Nodemailer (MIT-0), Papa Parse, qrcode, Sonner, pino. "WhatsApp" is a trademark of Meta Platforms, Inc.; this product isn't affiliated with or endorsed by Meta.</p>
+
+<h2 id="support">Support</h2>
+<p>Please open an issue on <a href="https://github.com/epifive/whatsapp-crm/issues">GitHub</a> and include the app version (the <code>version</code> in <code>package.json</code>) and what you see (screenshots and the worker/web logs help a lot). Bug reports and pull requests are welcome.</p>
+<p>Need CRM for WhatsApp hosted for you, installed on your own server, or customised? Contact <a href="https://www.epifive.com/services">EpiFive</a>.</p>
+<p>CRM for WhatsApp is released under the <a href="https://github.com/epifive/whatsapp-crm/blob/main/LICENSE">MIT licence</a>.</p>
+</main>
+</body>
+</html>

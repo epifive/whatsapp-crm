@@ -1,0 +1,52 @@
+# CRM for WhatsApp with Docker:
+#   1. cp .env.example .env   and set POSTGRES_PASSWORD, APP_KEY and APP_URL
+#   2. docker compose up -d --build
+#   3. open APP_URL (or http://localhost:3000) and finish the web installer
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: wacrm
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: wa_crm
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wacrm -d wa_crm"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app:
+    build: .
+    image: whatsapp-crm
+    restart: unless-stopped
+    environment: &app-env
+      DATABASE_URL: postgresql://wacrm:${POSTGRES_PASSWORD}@postgres:5432/wa_crm
+      APP_KEY: ${APP_KEY:?Set APP_KEY in .env}
+      APP_URL: ${APP_URL:-http://localhost:3000}
+      PORT: "3000"
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    volumes:
+      - storage:/app/storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Campaigns, scheduled messages, QR (Baileys) connections, chatbot flows, billing reminders
+  worker:
+    image: whatsapp-crm
+    restart: unless-stopped
+    command: ["npm", "run", "worker"]
+    environment: *app-env
+    volumes:
+      - storage:/app/storage
+    depends_on:
+      app:
+        condition: service_started
+
+volumes:
+  pgdata:
+  storage:
