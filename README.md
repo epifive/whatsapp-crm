@@ -43,8 +43,9 @@ More screenshots are in [`documentation/images`](documentation/images).
 ## Hosted version & paid installation
 
 Need CRM for WhatsApp hosted for you, installed on your own server, or customised? Contact
-**[EpiFive](https://www.epifive.com/services)**.
-More open-source projects: https://www.epifive.com/open-source
+**[EpiFive](https://www.epifive.com/services#custom-app-development)**.
+- Step-by-step guide: [CRM for WhatsApp on the EpiFive blog](https://www.epifive.com/blog/crm-for-whatsapp-open-source-whatsapp-crm)
+- More open-source projects: [epifive.com/open-source](https://www.epifive.com/open-source)
 
 ## Quick start
 
