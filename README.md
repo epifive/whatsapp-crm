@@ -1,14 +1,32 @@
 # CRM for WhatsApp
 
+<!-- epifive:header -->
+> One shared WhatsApp inbox for your team, with contacts, deals, campaigns, chatbots and an AI assistant, on the official Cloud API or a QR-linked number.
+
+[![Licence: MIT](https://img.shields.io/badge/licence-MIT-0a7560?style=flat-square)](LICENSE)
+[![Latest release](https://img.shields.io/github/v/release/epifive/whatsapp-crm?style=flat-square&label=release&color=4f5bd5)](https://github.com/epifive/whatsapp-crm/releases/latest)
+[![GitHub stars](https://img.shields.io/github/stars/epifive/whatsapp-crm?style=flat-square&color=b5791b)](https://github.com/epifive/whatsapp-crm/stargazers)
+
+**[Docs & guide on epifive.com](https://www.epifive.com/blog/crm-for-whatsapp-open-source-whatsapp-crm?utm_source=github&utm_medium=readme&utm_campaign=whatsapp-crm)** · **[Live demo](https://crm-for-whatsapp-demo.vercel.app)** · **[Download the latest release](https://github.com/epifive/whatsapp-crm/releases/latest)**
+
 **Open-source, multi-tenant WhatsApp CRM SaaS: shared team inbox, contacts and deals, campaigns,
 chatbot flows and an AI assistant** — on the official WhatsApp Cloud API or any WhatsApp number via
-QR code (with built-in anti-ban protection), with plans and online payments. Built with Next.js 16,
+QR code (an unofficial connection: read the ban-risk note below), with plans and online payments. Built with Next.js 16,
 React 19, Prisma and PostgreSQL.
 
 **Live demo:** https://crm-for-whatsapp-demo.vercel.app — one-click demo logins on the sign-in page
 (`admin@demo.test`, `owner@demo.test` or `agent@demo.test`, password `demo1234`; data resets daily).
 
 ![Team inbox](documentation/images/app-inbox.jpg)
+
+> [!WARNING]
+> **QR-code connections are unofficial and can get a number banned.** They use
+> [Baileys](https://github.com/WhiskeySockets/Baileys), an unofficial WhatsApp Web client. WhatsApp does not allow
+> unofficial clients and may temporarily or permanently ban numbers that use them. The warm-up, pacing and daily
+> limits in this app lower the risk but cannot remove it, so never connect a number you cannot afford to lose. For
+> business-critical numbers use the official
+> [WhatsApp Business Platform (Cloud API)](https://developers.facebook.com/docs/whatsapp/cloud-api), which this app
+> fully supports.
 
 ## Features
 
@@ -142,3 +160,7 @@ Bug reports and pull requests are welcome — please open an
 ## License
 
 [MIT](LICENSE) © 2026 EpiFive
+
+---
+
+<p align="center">Made by <b>EpiFive</b> — <a href="https://www.epifive.com/?utm_source=github&utm_medium=readme&utm_campaign=whatsapp-crm">www.epifive.com</a> · <a href="https://www.epifive.com/open-source?utm_source=github&utm_medium=readme&utm_campaign=whatsapp-crm">more open-source projects</a></p>
